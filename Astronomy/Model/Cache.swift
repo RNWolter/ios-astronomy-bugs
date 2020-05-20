@@ -18,6 +18,7 @@ class Cache<Key: Hashable, Value> {
         // concurrent -->
         queue.async {
             self.cache[key] = value
+            print("Inside the async queue")
         }
         
         
