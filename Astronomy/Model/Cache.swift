@@ -10,12 +10,32 @@ import UIKit
 
 class Cache<Key: Hashable, Value> {
     
+    
+    private let queue = DispatchQueue(label: "Cache \(Cache.self)")
     func cache(value: Value, for key: Key) {
-        cache[key] = value
+        
+        // serial ->
+        // concurrent -->
+        queue.async {
+            self.cache[key] = value
+        }
+        
+        
+        
+        
+        
+        // sync --> line 25 will execute after the above closure
+        // sync means we must wait for the closure to finish executing
+        
+        //async --> line 25 will execute () the above closure
+        // will it run befort the closure? it depends how many blocks on the queue
+        // will it run during the closure? it depends how many blocks on the queue
+        // will it run after the closure? it depends how many blocks on the queue
+        
     }
     
     func value(for key: Key) -> Value? {
-        return cache[key]
+        return queue.sync {cache[key]}
     }
     
     private var cache = [Key : Value]()
